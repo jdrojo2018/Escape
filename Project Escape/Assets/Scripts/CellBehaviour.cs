@@ -5,7 +5,8 @@ using UnityEngine;
 public class CellBehaviour : MonoBehaviour
 {
     // Start is called before the first frame update
-    public bool canPass;
+    public int CellCode;
+
     private Renderer thisRend;
 
     void Start()
@@ -16,13 +17,25 @@ public class CellBehaviour : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (canPass)
+        switch (CellCode)
         {
-            thisRend.material.SetColor("_Color", Color.white);
+            case 0:
+                thisRend.material.SetColor("_Color", Color.white);
+                break;
+            case 1:
+                thisRend.material.SetColor("_Color", Color.red);
+                break;
+            case 2:
+                thisRend.material.SetColor("_Color", Color.yellow);
+                break;
+            case 3:
+                thisRend.material.SetColor("_Color", Color.blue);
+                break;
+            case 4:
+                thisRend.material.SetColor("_Color", Color.magenta);
+                break;
         }
-        else
-        {
-            thisRend.material.SetColor("_Color", Color.red);
-        }
+
+        
     }
 }

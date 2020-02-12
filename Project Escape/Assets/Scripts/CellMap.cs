@@ -19,7 +19,7 @@ public class CellMap : MonoBehaviour
         */
 
         coordinates = new int[10, 10] {
-            {0, 0, 0, 2, 0, 0, 0, 1, 0, 4},
+            {3, 0, 0, 2, 0, 0, 0, 1, 0, 4},
             {0, 1, 1, 1, 0, 1, 0, 1, 2, 1},
             {0, 0, 0, 1, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 1, 0, 1, 1, 0, 0, 0},
@@ -37,8 +37,7 @@ public class CellMap : MonoBehaviour
             {
                 Vector3 position = new Vector3(i - 4.5f, -0.5f, j - 4.5f);
                 Quaternion rotation = new Quaternion();
-                if (coordinates[i, j] != 0) cell.canPass = false;
-                else cell.canPass = true;
+                cell.CellCode = coordinates[i, j];
                 Instantiate(cell, position, rotation);
             }
         }
