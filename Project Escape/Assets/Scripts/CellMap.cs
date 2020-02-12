@@ -19,7 +19,7 @@ public class CellMap : MonoBehaviour
         */
 
         coordinates = new int[10, 10] {
-            {3, 0, 0, 2, 0, 0, 0, 1, 0, 4},
+            {0, 0, 0, 2, 0, 0, 0, 1, 0, 4},
             {0, 1, 1, 1, 0, 1, 0, 1, 2, 1},
             {0, 0, 0, 1, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 1, 0, 1, 1, 0, 0, 0},
@@ -35,10 +35,16 @@ public class CellMap : MonoBehaviour
         {
             for(int j = 0; j < coordinates.GetLength(1); j++)
             {
-                Vector3 position = new Vector3(i - 4.5f, -0.5f, j - 4.5f);
+                Vector3 position = new Vector3(j - 4.5f, -0.5f, 4.5f - i);
                 Quaternion rotation = new Quaternion();
                 cell.CellCode = coordinates[i, j];
                 Instantiate(cell, position, rotation);
+                if(cell.CellCode == 3)
+                {
+                    GameObject capsule = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+                    Instantiate(capsule);
+                    capsule.transform.Translate(0, 5, 0);
+                }
             }
         }
     }

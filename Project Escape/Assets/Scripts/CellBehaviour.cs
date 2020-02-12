@@ -34,6 +34,9 @@ public class CellBehaviour : MonoBehaviour
             case 4:
                 thisRend.material.SetColor("_Color", Color.magenta);
                 break;
+            case 5: //Just in order to debug
+                thisRend.material.SetColor("_Color", Color.black);
+                break;
         }
 
         
