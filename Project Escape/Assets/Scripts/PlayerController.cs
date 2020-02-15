@@ -27,24 +27,11 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         if (newDir==-1) {
-            if (Input.GetKey(KeyCode.W) && canMoveTo(0))
-            {
-                newDir = 0;                
-            }
-            if (Input.GetKey(KeyCode.A) && canMoveTo(1))
-            {
-                newDir = 1;
-
-            }
-            if (Input.GetKey(KeyCode.S) && canMoveTo(2))
-            {
-                newDir = 2;
-
-            }
-            if (Input.GetKey(KeyCode.D) && canMoveTo(3))
-            {
-                newDir = 3;
-            }
+            if (Input.GetKey(KeyCode.W)) newDir = 0;
+            if (Input.GetKey(KeyCode.A)) newDir = 1;
+            if (Input.GetKey(KeyCode.S)) newDir = 2;
+            if (Input.GetKey(KeyCode.D)) newDir = 3;
+            if (newDir>=0&&!canMoveTo(newDir)) newDir = -1;
         }
         else
         {
@@ -53,9 +40,11 @@ public class PlayerController : MonoBehaviour
             currentDistance += speed * Time.deltaTime;
             if (currentDistance >= 1)
             {
-                transform.position.Set(posx, 0, posz);
+                //Centra el movimiendo a la casilla.
+                transform.position = new Vector3(posx - controlador.posz, 0.5f, controlador.posx - posz);
                 newDir = -1;
                 currentDistance = 0;
+                Debug.Log("Estoy en: " + posx + " " + posz);
             }
         }
     }
@@ -65,34 +54,41 @@ public class PlayerController : MonoBehaviour
         switch (c)
         {
             case 0://Arriba
-                if (posz == 0)
-                    return false;
+                if (posz == 0) return false;
 
-                if (mapa[posx, --posz] == 0)
+                if (mapa[posz - 1, posx] == 0)
+                {
+                    posz--;
                     return true;
-
+                }
                 break;
             case 1://Izquierda
-                if (posx == 0)
-                    return false;
+                if (posx == 0) return false;
 
-                if (mapa[posx, --posx] == 0)
+                if (mapa[posz, posx - 1] == 0)
+                {
+                    posx--;
                     return true;
+                }
                 break;
             case 2://Abajo
-                if (posz == 9)
-                    return false;
+                if (posz == 9) return false;
 
-                if (mapa[posx, ++posz] == 0)
+                if (mapa[posz + 1, posx] == 0)
+                {
+                    posz++;
                     return true;
+                }
                 break;
 
             case 3://Derecha
-                if (posx == 9)
-                    return false;
+                if (posx == 9) return false;
 
-                if (mapa[posx, ++posx] == 0)
+                if (mapa[posz, posx + 1] == 0)
+                {
+                    posx++;
                     return true;
+                }
                 break;
         }
         return false;

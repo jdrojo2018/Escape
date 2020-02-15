@@ -6,6 +6,8 @@ public class CellMap : MonoBehaviour
 {
     private int[,] coordinates;
     public CellBehaviour cell;
+    public float posx;
+    public float posz;
 
     // Start is called before the first frame update
     void Start()
@@ -17,7 +19,8 @@ public class CellMap : MonoBehaviour
             3 -> Start
             4 -> End
         */
-
+        posx = 4.5f;
+        posz = 4.5f;
         coordinates = new int[10, 10] {
             {0, 0, 0, 2, 0, 0, 0, 1, 0, 4},
             {0, 1, 1, 1, 0, 1, 0, 1, 2, 1},
@@ -35,7 +38,7 @@ public class CellMap : MonoBehaviour
         {
             for(int j = 0; j < coordinates.GetLength(1); j++)
             {
-                Vector3 position = new Vector3(j - 4.5f, -0.5f, 4.5f - i);
+                Vector3 position = new Vector3(j - posz, -0.5f, posx - i);
                 Quaternion rotation = new Quaternion();
                 cell.CellCode = coordinates[i, j];
                 Instantiate(cell, position, rotation);
