@@ -54,4 +54,8 @@ public class CellMap : MonoBehaviour
     {
         
     }
+    public int[,] getMap()
+    {
+        return coordinates;
+    }
 }
