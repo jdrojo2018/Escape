@@ -4,98 +4,115 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public int posx;
-    public int posz;
-    public float speed;
-    public int currentDir;
-    public int newDir;
+    public int iColumnPosition;
+    public int iRowPosition;
+    public float fMovementSpeed;
+    public int iLookDirection;
+    public int iMoveDirection;
     private CellMap controlador;
-    private float currentDistance; 
+    private float fTraveledDistance; 
+
     // Start is called before the first frame update
     void Start()
     {
-        posx = 0;
-        posz = 0;
-        newDir = -1;
-        speed = 1.0f;
-        currentDir = -1;
-        currentDistance = 0;
+        iColumnPosition = 0;
+        iRowPosition = 0;
+        iMoveDirection = -1;
+        fMovementSpeed = 5.0f;
+        iLookDirection = -1;
+        fTraveledDistance = 0;
+
         controlador = GameObject.Find("CellContainer").GetComponent(typeof(CellMap)) as CellMap;
         if (!controlador) Debug.Log("No encontrado");
     }
     // Update is called once per frame
     void Update()
     {
-        if (newDir==-1) {
-            if (Input.GetKey(KeyCode.W)) newDir = 0;
-            if (Input.GetKey(KeyCode.A)) newDir = 1;
-            if (Input.GetKey(KeyCode.S)) newDir = 2;
-            if (Input.GetKey(KeyCode.D)) newDir = 3;
-            if (newDir>=0&&!canMoveTo(newDir)) newDir = -1;
+
+        if (iMoveDirection==-1) {
+            KeyboardCheck();
+            if (iMoveDirection >= 0 && !CanMoveTowardsDirection(iMoveDirection)) iMoveDirection = -1;
         }
         else
         {
-            rotateFacing(newDir);
-            transform.Translate(Vector3.forward * speed * Time.deltaTime);
-            currentDistance += speed * Time.deltaTime;
-            if (currentDistance >= 1)
-            {
-                //Centra el movimiendo a la casilla.
-                transform.position = new Vector3(posx - controlador.posz, 0.5f, controlador.posx - posz);
-                newDir = -1;
-                currentDistance = 0;
-                Debug.Log("Estoy en: " + posx + " " + posz);
-            }
+            UpdateMovement();
         }
     }
-    private bool canMoveTo(int c)
+
+    private void KeyboardCheck()
+    {
+        if (Input.GetKey(KeyCode.W)) iMoveDirection = 0;
+        if (Input.GetKey(KeyCode.A)) iMoveDirection = 1;
+        if (Input.GetKey(KeyCode.S)) iMoveDirection = 2;
+        if (Input.GetKey(KeyCode.D)) iMoveDirection = 3;
+    }
+
+    private void UpdateMovement()
+    {
+        RotateFacingDirection(iMoveDirection);
+
+        transform.Translate(Vector3.forward * fMovementSpeed * Time.deltaTime);
+        fTraveledDistance += fMovementSpeed * Time.deltaTime;
+
+        if (fTraveledDistance >= 1)
+        {
+            //Centra el movimiendo a la casilla y finaliza el movimiento.
+            transform.position = new Vector3(iColumnPosition - controlador.posz, 0.5f, controlador.posx - iRowPosition);
+            iMoveDirection = -1;
+            fTraveledDistance = 0;
+            Debug.Log("Estoy en: " + iColumnPosition + " " + iRowPosition);
+        }
+    }
+
+
+    private bool CanMoveTowardsDirection(int c)
     {
         int[,] mapa = controlador.getMap();
         switch (c)
         {
             case 0://Arriba
-                if (posz == 0) return false;
+                if (iRowPosition == 0) return false;
 
-                if (mapa[posz - 1, posx] == 0)
+                if (mapa[iRowPosition - 1, iColumnPosition] == 0)
                 {
-                    posz--;
+                    iRowPosition--;
                     return true;
                 }
                 break;
             case 1://Izquierda
-                if (posx == 0) return false;
+                if (iColumnPosition == 0) return false;
 
-                if (mapa[posz, posx - 1] == 0)
+                if (mapa[iRowPosition, iColumnPosition - 1] == 0)
                 {
-                    posx--;
+                    iColumnPosition--;
                     return true;
                 }
                 break;
             case 2://Abajo
-                if (posz == 9) return false;
+                if (iRowPosition == 9) return false;
 
-                if (mapa[posz + 1, posx] == 0)
+                if (mapa[iRowPosition + 1, iColumnPosition] == 0)
                 {
-                    posz++;
+                    iRowPosition++;
                     return true;
                 }
                 break;
 
             case 3://Derecha
-                if (posx == 9) return false;
+                if (iColumnPosition == 9) return false;
 
-                if (mapa[posz, posx + 1] == 0)
+                if (mapa[iRowPosition, iColumnPosition + 1] == 0)
                 {
-                    posx++;
+                    iColumnPosition++;
                     return true;
                 }
                 break;
         }
         return false;
     }
-    private bool rotateFacing(int newDir)
+    private bool RotateFacingDirection(int newDir)
     {
-        if (newDir != currentDir)
+        if (newDir != iLookDirection)
         {
             switch (newDir)
             {
@@ -112,41 +129,8 @@ public class PlayerController : MonoBehaviour
                     this.transform.rotation = Quaternion.Euler(0, 90, 0);
                     break;
             }
-            currentDir = newDir;
+            iLookDirection = newDir;
         }
-        
-        /*
-        switch (newDir - currentDir)
-        {    
-            case -1:
-                currentDir = newDir;
-                this.transform.Rotate(0, 90, 0, 0);
-                break;
-            case -2:
-                currentDir = newDir;
-                this.transform.Rotate(0, 180, 0, 0);
-                break;
-            case -3:
-                currentDir = newDir;
-                this.transform.Rotate(0, 270, 0, 0);
-                break;
-            case 1:
-                currentDir = newDir;
-                this.transform.Rotate(0, -90, 0, 0);
-                break;
-            case 2:
-                currentDir = newDir;
-                this.transform.Rotate(0, -180, 0, 0);
-                break;
-            case 3:
-                currentDir = newDir;
-                this.transform.Rotate(0, -270, 0, 0);
-                break;
-            default:
-                break;
-        }
-        */
-
         return false;
     }
 }
